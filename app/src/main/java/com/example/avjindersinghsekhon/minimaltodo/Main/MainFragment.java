@@ -12,6 +12,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -55,6 +56,8 @@ import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class MainFragment extends AppDefaultFragment {
+
+
     private RecyclerViewEmptySupport mRecyclerView;
     private FloatingActionButton mAddToDoItemFAB;
     private ArrayList<ToDoItem> mToDoItemsArrayList;
@@ -87,6 +90,12 @@ public class MainFragment extends AppDefaultFragment {
     };
 
 
+
+    @Override
+    protected int layoutRes() {
+        return R.layout.fragment_main;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -118,26 +127,6 @@ public class MainFragment extends AppDefaultFragment {
         setAlarms();
 
 
-//        adapter.notifyDataSetChanged();
-//        storeRetrieveData = new StoreRetrieveData(this, FILENAME);
-//
-//        try {
-//            mToDoItemsArrayList = storeRetrieveData.loadFromFile();
-////            Log.d("OskarSchindler", "Arraylist Length: "+mToDoItemsArrayList.size());
-//        } catch (IOException | JSONException e) {
-////            Log.d("OskarSchindler", "IOException received");
-//            e.printStackTrace();
-//        }
-//
-//        if(mToDoItemsArrayList==null){
-//            mToDoItemsArrayList = new ArrayList<>();
-//        }
-//
-
-//        mToDoItemsArrayList = new ArrayList<>();
-//        makeUpItems(mToDoItemsArrayList, testStrings.length);
-
-
         mCoordLayout = (CoordinatorLayout) view.findViewById(R.id.myCoordinatorLayout);
         mAddToDoItemFAB = (FloatingActionButton) view.findViewById(R.id.addToDoItemFAB);
 
@@ -151,30 +140,9 @@ public class MainFragment extends AppDefaultFragment {
                 ToDoItem item = new ToDoItem("","", false, null);
                 int color = ColorGenerator.MATERIAL.getRandomColor();
                 item.setTodoColor(color);
-                //noinspection ResourceType
-//                String color = getResources().getString(R.color.primary_ligher);
-                newTodo.putExtra(TODOITEM, item);
-//                View decorView = getWindow().getDecorView();
-//                View navView= decorView.findViewById(android.R.id.navigationBarBackground);
-//                View statusView = decorView.findViewById(android.R.id.statusBarBackground);
-//                Pair<View, String> navBar ;
-//                if(navView!=null){
-//                    navBar = Pair.create(navView, navView.getTransitionName());
-//                }
-//                else{
-//                    navBar = null;
-//                }
-//                Pair<View, String> statusBar= Pair.create(statusView, statusView.getTransitionName());
-//                ActivityOptions options;
-//                if(navBar!=null){
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, navBar, statusBar);
-//                }
-//                else{
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, statusBar);
-//                }
 
-//                startActivity(new Intent(MainActivity.this, TestLayout.class), options.toBundle());
-//                startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM, options.toBundle());
+                newTodo.putExtra(TODOITEM, item);
+
 
                 startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM);
             }
@@ -189,7 +157,17 @@ public class MainFragment extends AppDefaultFragment {
         mRecyclerView.setEmptyView(view.findViewById(R.id.toDoEmptyView));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+//        mRecyclerView.setLayoutManager(  new HorizontalPageLayoutManager(1, 2));
+
+
+
+
+
 
 
         customRecyclerScrollViewListener = new CustomRecyclerScrollViewListener() {
@@ -324,6 +302,8 @@ public class MainFragment extends AppDefaultFragment {
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -331,22 +311,7 @@ public class MainFragment extends AppDefaultFragment {
                 Intent i = new Intent(getContext(), AboutActivity.class);
                 startActivity(i);
                 return true;
-//            case R.id.switch_themes:
-//                if(mTheme == R.style.CustomStyle_DarkTheme){
-//                    addThemeToSharedPreferences(LIGHTTHEME);
-//                }
-//                else{
-//                    addThemeToSharedPreferences(DARKTHEME);
-//                }
-//
-////                if(mTheme == R.style.CustomStyle_DarkTheme){
-////                    mTheme = R.style.CustomStyle_LightTheme;
-////                }
-////                else{
-////                    mTheme = R.style.CustomStyle_DarkTheme;
-////                }
-//                this.recreate();
-//                return true;
+
             case R.id.preferences:
                 Intent intent = new Intent(getContext(), SettingsActivity.class);
                 startActivity(intent);
@@ -433,10 +398,13 @@ public class MainFragment extends AppDefaultFragment {
     }
 
     public class BasicListAdapter extends RecyclerView.Adapter<BasicListAdapter.ViewHolder> implements ItemTouchHelperClass.ItemTouchHelperAdapter {
+
+
         private ArrayList<ToDoItem> items;
 
         @Override
         public void onItemMoved(int fromPosition, int toPosition) {
+
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
                     Collections.swap(items, i, i + 1);
@@ -447,6 +415,8 @@ public class MainFragment extends AppDefaultFragment {
                 }
             }
             notifyItemMoved(fromPosition, toPosition);
+            System.out.println("shiming notifyItemMoved ");
+
         }
 
         @Override
@@ -490,13 +460,8 @@ public class MainFragment extends AppDefaultFragment {
         @Override
         public void onBindViewHolder(final BasicListAdapter.ViewHolder holder, final int position) {
             ToDoItem item = items.get(position);
-//            if(item.getToDoDate()!=null && item.getToDoDate().before(new Date())){
-//                item.setToDoDate(null);
-//            }
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE);
-            //Background color for each to-do item. Necessary for night/day mode
             int bgColor;
-            //color of title text in our to-do item. White for night mode, dark gray for day mode
             int todoTextColor;
             if (sharedPreferences.getString(THEME_SAVED, LIGHTTHEME).equals(LIGHTTHEME)) {
                 bgColor = Color.WHITE;
@@ -510,23 +475,12 @@ public class MainFragment extends AppDefaultFragment {
             if (item.hasReminder() && item.getToDoDate() != null) {
                 holder.mToDoTextview.setMaxLines(1);
                 holder.mTimeTextView.setVisibility(View.VISIBLE);
-//                holder.mToDoTextview.setVisibility(View.GONE);
             } else {
                 holder.mTimeTextView.setVisibility(View.GONE);
                 holder.mToDoTextview.setMaxLines(2);
             }
             holder.mToDoTextview.setText(item.getToDoText());
             holder.mToDoTextview.setTextColor(todoTextColor);
-//            holder.mColorTextView.setBackgroundColor(Color.parseColor(item.getTodoColor()));
-
-//            TextDrawable myDrawable = TextDrawable.builder().buildRoundRect(item.getToDoText().substring(0,1),Color.RED, 10);
-            //We check if holder.color is set or not
-//            if(item.getTodoColor() == null){
-//                ColorGenerator generator = ColorGenerator.MATERIAL;
-//                int color = generator.getRandomColor();
-//                item.setTodoColor(color+"");
-//            }
-//            Log.d("OskarSchindler", "Color: "+item.getTodoColor());
             TextDrawable myDrawable = TextDrawable.builder().beginConfig()
                     .textColor(Color.WHITE)
                     .useFont(Typeface.DEFAULT)
@@ -594,11 +548,6 @@ public class MainFragment extends AppDefaultFragment {
         }
     }
 
-    //Used when using custom fonts
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-//    }
 
     private void saveDate() {
         try {
@@ -609,6 +558,9 @@ public class MainFragment extends AppDefaultFragment {
 
     }
 
+    /**
+     * 失去焦点就保存 卧槽
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -622,32 +574,10 @@ public class MainFragment extends AppDefaultFragment {
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
         mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
     }
 
-
-    //    public void setUpTransitions(){
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            Transition enterT = new Slide(Gravity.RIGHT);
-//            enterT.setDuration(500);
-//
-//            Transition exitT = new Slide(Gravity.LEFT);
-//            exitT.setDuration(300);
-//
-//            Fade fade = new Fade();
-//            fade.setDuration(500);
-//
-//            getWindow().setExitTransition(fade);
-//            getWindow().setReenterTransition(fade);
-//
-//        }
-//    }
-    @Override
-    protected int layoutRes() {
-        return R.layout.fragment_main;
-    }
 
     public static MainFragment newInstance() {
         return new MainFragment();

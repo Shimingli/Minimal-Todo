@@ -13,6 +13,8 @@ import com.example.avjindersinghsekhon.minimaltodo.AppDefault.AppDefaultActivity
 import com.example.avjindersinghsekhon.minimaltodo.R;
 import com.example.avjindersinghsekhon.minimaltodo.Settings.SettingsActivity;
 
+
+
 public class MainActivity extends AppDefaultActivity {
 
     protected void onCreate(Bundle savedInstanceState) {

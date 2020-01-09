@@ -35,6 +35,9 @@ public class StoreRetrieveData {
     }
 
     public void saveToFile(ArrayList<ToDoItem> items) throws JSONException, IOException {
+
+
+        System.out.println("shiming   saveToFile " +toJSONArray(items).toString());
         FileOutputStream fileOutputStream;
         OutputStreamWriter outputStreamWriter;
         fileOutputStream = mContext.openFileOutput(mFileName, Context.MODE_PRIVATE);

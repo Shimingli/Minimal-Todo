@@ -92,6 +92,12 @@ public class AddToDoFragment extends AppDefaultFragment implements DatePickerDia
     AnalyticsApplication app;
 
     @Override
+    protected int layoutRes() {
+        return R.layout.fragment_add_to_do;
+    }
+
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         app = (AnalyticsApplication) getActivity().getApplication();
@@ -515,6 +521,8 @@ public class AddToDoFragment extends AppDefaultFragment implements DatePickerDia
         setReminderTextView();
 //        setDateAndTimeEditText();
         setDateEditText();
+
+
     }
 
     public void setTime(int hour, int minute) {
@@ -705,10 +713,7 @@ public class AddToDoFragment extends AppDefaultFragment implements DatePickerDia
     }
 
 
-    @Override
-    protected int layoutRes() {
-        return R.layout.fragment_add_to_do;
-    }
+
 
     public static AddToDoFragment newInstance() {
         return new AddToDoFragment();
